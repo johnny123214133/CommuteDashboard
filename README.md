@@ -1,1 +1,1 @@
-### This is a dashboard and server that server to analyze potential daily commute times
+### This is a dashboard and server that analyze potential daily commute times
