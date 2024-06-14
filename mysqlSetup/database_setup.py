@@ -11,15 +11,12 @@ mysql_credentials = {
 	'database' : os.environ.get('MYSQL_DB')
 }
 
-# print(mysql_credentials)
-
 def setup(): 
 	# To connect MySQL database 
 	conn = pymysql.connect( 
 		host=mysql_credentials['host'], 
 		user=mysql_credentials['user'],  
 		password=mysql_credentials['password'], 
-		# db=mysql_credentials['database'], 
 	) 
 	
 	cur = conn.cursor()
@@ -27,7 +24,6 @@ def setup():
 	try:
 		print('creating db...')
 		statement = f'create database if not exists {mysql_credentials['database']};'
-		# print(statement)
 		cur.execute(statement)
 		statement = f'use {mysql_credentials['database']};'
 		cur.execute(statement)
