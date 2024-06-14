@@ -1,1 +1,1 @@
-drop table location;
+drop table if exists location;

@@ -1,1 +1,1 @@
-drop table trip;
+drop table if exists trip;

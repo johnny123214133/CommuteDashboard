@@ -1,1 +1,1 @@
-drop table route;
+drop table if exists route;
