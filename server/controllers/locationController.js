@@ -12,14 +12,14 @@ export async function getLocationRoot(req, res) {
 export async function getLocationById(req, res, next) {
 	try{
 		var id = Number(req.params.id)
-		// send to next route since param is not just a number
+		// send to get by address route since param is not just a number
 		if (isNaN(id)) next('route')
 
 		// validate request
 		if (!Number.isInteger(id) || id < 1) {
 			throw ['id must be an integer greater than 0']
 		}
-		
+
 		// process the request
 		console.log('getting location by id')
 		res.send('got location by id')
@@ -85,7 +85,6 @@ export async function createLocation(req, res, next) {
 		res.send('created location')
 	}
 	catch (err) {
-		// console.log('caught an error...')
 		next({status: 400, error: 'Bad Request', messages: err})
 	}
 }
@@ -104,7 +103,6 @@ export async function deleteLocationById(req, res, next) {
 		res.send('deleted location by id')
 	}
 	catch (err) {
-		// console.log('caught an error...')
 		next({status: 400, error: 'Bad Request', messages: err})
 	}
 }

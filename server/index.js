@@ -20,10 +20,9 @@ app.use(express.json())
 app.use('/', indexRouter)
 app.use('/location', locationRouter)
 
+// general error handler
 app.use(function (err, req, res, next) {
   console.log('An Error Occurred: ', err.status)
-  // console.log(err.messages)
-
   const error = new ErrorResponse(err.status, err.error, err.messages)
   console.log(error)
   res.status(err.status || 500).send(error);
