@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import {indexRouter, locationRouter} from './routes/index.js'
+import {indexRouter, locationRouter, routeRouter, tripRouter} from './routes/index.js'
 import ErrorResponse from './utils/errorResponse.js'
 
 dotenv.config()
@@ -19,6 +19,8 @@ app.use(express.json())
 
 app.use('/', indexRouter)
 app.use('/location', locationRouter)
+app.use('/route', routeRouter)
+app.use('/trip', tripRouter)
 
 // general error handler
 app.use(function (err, req, res, next) {
