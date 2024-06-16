@@ -4,9 +4,9 @@ import { locationController } from '../controllers/index.js'
 var router = express.Router()
 
 router.get('/', locationController.getLocationRoot)
+router.get('/:id', locationController.getLocationById)
 router.get('/:address', locationController.getLocationByAddress)
-router.get('/:lat&:lng', locationController.getLocationByLatLng)
-// router.get('/:id', locationController.getLocationById)
+router.get('/:lat/:lng', locationController.getLocationByLatLng)
 
 router.post('/', locationController.createLocation)
 
