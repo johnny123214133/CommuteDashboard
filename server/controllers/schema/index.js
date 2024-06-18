@@ -5,8 +5,8 @@ export var createLocationRequestSchema = {
 	"type" : "object",
 	"properties" : {
 		"address" : { "type" : "string" },
-		"lat" : { "type" : "integer", "minimum" : LAT_MIN, "maximum" : LAT_MAX },
-		"lng" : { "type" : "integer", "minimum" : LNG_MIN, "maximum" : LNG_MAX }
+		"lat" : { "type" : "number", "minimum" : LAT_MIN, "maximum" : LAT_MAX },
+		"lng" : { "type" : "number", "minimum" : LNG_MIN, "maximum" : LNG_MAX }
 	}
 }
 
@@ -24,7 +24,7 @@ export var createTripRequestSchema = {
 	"type" : "object",
 	"properties" : {
 		"routeId" : { "type" : "integer", "minimum" : 1 },
-		"startTime" : { "type" : "string" },
+		"startTime" : { "type" : "integer"},
 		"bestDuration" : { "type" : "integer", "minimum" : 0 },
 		"avgDuration" : { "type" : "integer", "minimum" : 0 },
 		"worstDuration" : { "type" : "integer", "minimum" : 0 },

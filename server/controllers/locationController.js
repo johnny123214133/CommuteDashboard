@@ -16,6 +16,8 @@ export async function getLocationById(req, res, next) {
 		if (isNaN(id)) next('route')
 
 		// validate request
+		// all erroneous inputs for id are implicitly caught by the isInteger check
+		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
 			throw ['id must be an integer greater than 0']
 		}
@@ -55,10 +57,10 @@ export async function getLocationByLatLng(req, res, next) {
 		// validate request
 		if (isNaN(lat)) throw ['lat must be a number']
 		if (isNaN(lng)) throw ['lng must be a number']
-		if (lat < LAT_MIN || lat > LAT_MAX) {
+		if (lat <= LAT_MIN || lat >= LAT_MAX) {
 			throw ['lat must be bewteen ' + LAT_MIN + ' and ' + LAT_MAX]
 		}
-		if (lng < LNG_MIN || lng > LNG_MAX) {
+		if (lng <= LNG_MIN || lng >= LNG_MAX) {
 			throw ['lng must be bewteen ' + LNG_MIN + ' and ' + LNG_MAX]
 		}
 
@@ -94,6 +96,8 @@ export async function deleteLocationById(req, res, next) {
 		var id = Number(req.params.id)
 		
 		// validate request
+		// all erroneous inputs for id are implicitly caught by the isInteger check
+		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
 			throw ['id must be an integer greater than 0']
 		}
