@@ -58,8 +58,12 @@ export async function createTrip(req, res, next) {
 
 		// validate request
 		if (!validationResult.valid) throw parseValidationErrors(validationResult.errors)
-		console.log(typeof body.startTime)
-		if (body.startTime < now) throw ['startTime must be a future datetime in milliseconds, greater than ' + now]
+		if (body.startTime < now) {
+			throw ['startTime must be a future datetime in milliseconds, greater than ' + now]
+		}
+		if (Object.keys(body).length > createTripRequestSchema.required.length) {
+			throw ['request body must only have attributes: ' + createTripRequestSchema.required.join(', ')]
+		}
 		
 		// process the request
 		console.log('creating trip')

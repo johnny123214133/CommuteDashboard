@@ -57,7 +57,9 @@ export async function createRoute(req, res, next) {
 
 		// validate request
 		if (!validationResult.valid) throw parseValidationErrors(validationResult.errors)
-		
+		if (Object.keys(body).length > createRouteRequestSchema.required.length) {
+			throw ['request body must only have attributes: ' + createRouteRequestSchema.required.join(', ')]
+		}
 		// process the request
 		console.log('creating route')
 		console.log(body)

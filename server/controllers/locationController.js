@@ -80,7 +80,10 @@ export async function createLocation(req, res, next) {
 
 		// validate request
 		if (!validationResult.valid) throw parseValidationErrors(validationResult.errors)
-		
+		if (Object.keys(body).length > createLocationRequestSchema.required.length) {
+			throw ['request body must only have attributes: ' + createLocationRequestSchema.required.join(', ')]
+		}
+
 		// process the request
 		console.log('creating location')
 		console.log(body)
