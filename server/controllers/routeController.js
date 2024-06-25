@@ -2,6 +2,7 @@ import{ validate }from 'jsonschema'
 
 import { createRouteRequestSchema } from './schema/index.js'
 import parseValidationErrors from '../utils/schemaValidation.js'
+import { routeService } from '../services/index.js'
 
 export async function getRouteRoot(req, res, next) {
 	console.log('route root')
@@ -21,7 +22,9 @@ export async function getRouteById(req, res, next) {
 
 		// process the request
 		console.log('getting route by id')
-		res.send('got route by id')
+		var result = await routeService.getRouteById(id)
+		// res.send('got route by id')
+		res.send(result)
 	}
 	catch (err) {
 		next({status: 400, error: 'Bad Request', messages: err})
@@ -43,7 +46,9 @@ export async function getRouteByOriginAndDestination(req, res, next) {
 
 		// process the request
 		console.log('getting route by origin and destination IDs')
-		res.send('got route by origin and destination IDs')
+		var result = await routeService.getRouteByOriginAndDestination(originId, destId)
+		// res.send('got route by origin and destination IDs')
+		res.send(result)
 	}
 	catch (err) {
 		next({status: 400, error: 'Bad Request', messages: err})
@@ -62,7 +67,9 @@ export async function createRoute(req, res, next) {
 		}
 		// process the request
 		console.log('creating route')
-		console.log(body)
+		// console.log(body)
+		await routeService.createRoute(body)
+		// res.send(response)
 		res.send('created route')
 	}
 	catch (err) {
@@ -83,6 +90,7 @@ export async function deleteRouteById(req, res, next) {
 
 		// process the request
 		console.log('deleting route by id')
+		await routeService.deleteRouteById(id)
 		res.send('deleted route by id')
 	}
 	catch (err) {
