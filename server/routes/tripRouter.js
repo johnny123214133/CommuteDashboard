@@ -6,6 +6,7 @@ var router = express.Router()
 router.get('/', tripController.getTripRoot)
 router.get('/:id', tripController.getTripById)
 router.get('/:routeId/:startTime', tripController.getTripByRouteAndStartTime)
+router.get('/:routeId/:startTime/:numTrips', tripController.getSomeTrips)
 
 router.post('/', tripController.createTrip)
 
