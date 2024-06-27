@@ -12,19 +12,22 @@ export async function getLocationRoot(req, res) {
 
 export async function getLocationById(req, res, next) {
 	try{
+		// console.log('get location by id')
 		var id = Number(req.params.id)
+		// console.log(id)
 		// send to get by address route since param is not just a number
-		if (isNaN(id)) next('route')
+		// if (isNaN(id)) next('route')
 
 		// validate request
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
+		// console.log('verifying id is integer')
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 
 		// process the request
-		console.log('getting location by id')
+		// console.log('getting location by id')
 		var result = await locationService.getLocationById(id)
 		// res.send('got location by id')
 		res.send(result)
@@ -36,20 +39,23 @@ export async function getLocationById(req, res, next) {
 
 export async function getLocationByAddress(req, res, next) {
 	try{
+		// console.log('get location by address')
 		var address = req.params.address
 
 		// validate request
 		if (!typeof address === 'string') {
-			throw ['address must be a string']
+			throw 'address must be a string'
 		}
 		// process the request
-		console.log('getting location by address')
+		// console.log('getting location by address')
 		var result = await locationService.getLocationByAddress(address)
 		// res.send('got location by address')
 		res.send(result)
 	}
 	catch (err) {
-		next({status: 400, error: 'Bad Request', messages: err})
+		var status = !err.name ? 400 : err.name === "Google Resource Not Found" ? 422 : 500
+		var name = err.name || 'Bad Request'
+		next({status: status, error: name, messages: err.message || err})
 	}
 }
 
@@ -60,13 +66,13 @@ export async function getLocationByLatLng(req, res, next) {
 		lng = Number(lng)
 
 		// validate request
-		if (isNaN(lat)) throw ['lat must be a number']
-		if (isNaN(lng)) throw ['lng must be a number']
+		if (isNaN(lat)) throw 'lat must be a number'
+		if (isNaN(lng)) throw 'lng must be a number'
 		if (lat <= LAT_MIN || lat >= LAT_MAX) {
-			throw ['lat must be bewteen ' + LAT_MIN + ' and ' + LAT_MAX]
+			throw 'lat must be bewteen ' + LAT_MIN + ' and ' + LAT_MAX
 		}
 		if (lng <= LNG_MIN || lng >= LNG_MAX) {
-			throw ['lng must be bewteen ' + LNG_MIN + ' and ' + LNG_MAX]
+			throw 'lng must be bewteen ' + LNG_MIN + ' and ' + LNG_MAX
 		}
 
 		// process the request
@@ -76,7 +82,9 @@ export async function getLocationByLatLng(req, res, next) {
 		res.send(result)
 	}
 	catch (err) {
-		next({status: 400, error: 'Bad Request', messages: err})
+		var status = !err.name ? 400 : err.name === "Google Resource Not Found" ? 422 : 500
+		var name = err.name || 'Bad Request'
+		next({status: status, error: name, messages: err.message || err})
 	}
 }
 
@@ -111,7 +119,7 @@ export async function deleteLocationById(req, res, next) {
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 		
 		// process the request

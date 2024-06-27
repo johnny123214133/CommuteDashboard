@@ -8,7 +8,6 @@ export async function getTripById(id) {
 	// trip is in the database: return trip
 	// trip is not in the database: return 40x error
 	try {
-		// console.log('I\'m in the service layer!')
 		return await tripRepository.getTripById(id).then((trip) => {
 			trip.start_time = fromMYSQLUTC(trip.start_time)
 			return trip
@@ -26,39 +25,29 @@ export async function getTripByRouteAndStartTime(routeId, startTime) {
 	// - create a new trip via googleMaps, save it, and return the new trip, 201 created
 	// - if googleMaps cannot create a trip, throw an error
 	try {
-		// console.log('in getTripByRouteAndStartTime, params:')
 		startTime = toMilliseconds(startTime)
-		// console.log([routeId, startTime])
 		startTime = roundToNextQuarterHour(startTime)
 		var startTimeForDb = toMYSQLDateTime(startTime)
-		// console.log('looking for datetime: ', startTime)
 		return await tripRepository.getTripByRouteAndStartTime(routeId, startTimeForDb)
-			.then((trip) => {
-				if (Object.keys(trip).length == 0) {
-					// console.log('trip DNE')
-					// console.log('generating trip')
-					return generateTrip(routeId, toMilliseconds(startTime)).then((newTrip) => {
-						// console.log('persisting trip')
-						// console.log(newTrip)
-						return createTrip(newTrip).then(() => {
-							// console.log('persisted trip')
-							// // return {}
-							// console.log('fetching trip')
-							return tripRepository.getTripByRouteAndStartTime(routeId, startTimeForDb).then(trip => {
-								// convert utc to local tz
-								trip.start_time = fromMYSQLUTC(trip.start_time)
-								return trip
-							})
+		.then((trip) => {
+			if (Object.keys(trip).length == 0) {
+				return generateTrip(routeId, toMilliseconds(startTime))
+				.then((newTrip) => {
+					return createTrip(newTrip).then(() => {
+						return tripRepository.getTripByRouteAndStartTime(routeId, startTimeForDb)
+						.then(trip => {
+							// convert utc to local tz
+							trip.start_time = fromMYSQLUTC(trip.start_time)
+							return trip
 						})
 					})
-				}
-				else {
-					// console.log('found trip by route and start time')
-					trip.start_time = fromMYSQLUTC(trip.start_time)
-					return trip
-				}
-			})
-		
+				})
+			}
+			else {
+				trip.start_time = fromMYSQLUTC(trip.start_time)
+				return trip
+			}
+		})
 	}
 	catch (err) {
 		throw err
@@ -69,14 +58,10 @@ export async function getSomeTrips(routeId, startTime, numTrips = 10) {
 	// Cases: 
 	// get or create numTrips consecutive trips starting at startTime
 	try {
-		// console.log('in getSomeTrips, params:')
-		// console.log([routeId, startTime, numTrips])
 		startTime = toMilliseconds(startTime)
 		startTime = roundToNextQuarterHour(startTime)
 		// console.log(startTime)
 		var startTimeForDb = toMYSQLDateTime(startTime)
-		// console.log(toMilliseconds(formattedStartTime))
-
 		var trips = []
 		for (let i = 0; i < numTrips; i++) {
 			var delta = i * FIFTEEN_MINUTES_MILLISECONDS
@@ -98,8 +83,6 @@ export async function createTrip(body) {
 	// - create a new trip, save it, and return 201 created
 	// - if googleMaps cannot create a trip, throw an error
 	try {
-		// console.log('in createTrip, params:')
-		// console.log(body)
 		body.startTime = toMilliseconds(body.startTime)
 		body.startTime = roundToNextQuarterHour(body.startTime)
 		body.startTime = toMYSQLDateTime(body.startTime)
@@ -137,34 +120,39 @@ function roundToNextQuarterHour(milliseconds) {
 
 // generate a trip using services
 async function generateTrip(routeId, startTime) {
-	console.log('in generateTrip, params:')
-	console.log([routeId, startTime])
-
-	var startTimeInSeconds = millisecondsToSeconds(startTime)
-	var departureTime = startTimeInSeconds
-	return await routeService.getRouteById(routeId).then((route) => {
-		var origin = locationService.getLocationById(route.origin_id).then(location => {
-			return location.address
-		})
-		var destination = locationService.getLocationById(route.dest_id).then(location => {
-			return location.address
-		})
-		return Promise.all([origin, destination]).then(([origin, destination]) => {
-			var bestTrip = googleMapsService.getTripDuration(origin, destination, departureTime, 'optimistic')
-			var avgTrip = googleMapsService.getTripDuration(origin, destination, departureTime)
-			var worstTrip = googleMapsService.getTripDuration(origin, destination, departureTime, 'pessimistic')
-			return Promise.all([bestTrip, avgTrip, worstTrip]).then(([bestTrip, avgTrip, worstTrip]) => {
-				return {
-					'routeId' : routeId,
-					'startTime' : startTime,
-					'bestDuration' : bestTrip,
-					'avgDuration' : avgTrip,
-					'worstDuration' : worstTrip
-				}
+	try {
+		var departureTime = millisecondsToSeconds(startTime)
+		return await routeService.getRouteById(routeId)
+		.then((route) => {
+			var origin = locationService.getLocationById(route.origin_id)
+			.then(location => {
+				return location.address
+			})
+			var destination = locationService.getLocationById(route.dest_id)
+			.then(location => {
+				return location.address
+			})
+			return Promise.all([origin, destination])
+			.then(([origin, destination]) => {
+				var bestTrip = googleMapsService.getTripDuration(origin, destination, departureTime, 'optimistic')
+				var avgTrip = googleMapsService.getTripDuration(origin, destination, departureTime)
+				var worstTrip = googleMapsService.getTripDuration(origin, destination, departureTime, 'pessimistic')
+				return Promise.all([bestTrip, avgTrip, worstTrip])
+				.then(([bestTrip, avgTrip, worstTrip]) => {
+					return {
+						'routeId' : routeId,
+						'startTime' : startTime,
+						'bestDuration' : bestTrip,
+						'avgDuration' : avgTrip,
+						'worstDuration' : worstTrip
+					}
+				})
 			})
 		})
-
-	})
+	}
+	catch (err) {
+		throw err
+	}
 }
 
 

@@ -17,7 +17,7 @@ export async function getRouteById(req, res, next) {
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 
 		// process the request
@@ -38,11 +38,11 @@ export async function getRouteByOriginAndDestination(req, res, next) {
 		destId = Number(destId)
 
 		// validate request
-		if (isNaN(originId)) throw ['originId must be a number']
-		if (isNaN(destId)) throw ['destId must be a number']
-		if (originId < 1) throw ['originId must be an integer greater than 0']
-		if (destId < 1) throw ['destId must be an integer greater than 0']
-		if (destId === originId) throw ['destId and originId cannot be equal']
+		if (isNaN(originId)) throw 'originId must be a number'
+		if (isNaN(destId)) throw 'destId must be a number'
+		if (originId < 1) throw 'originId must be an integer greater than 0'
+		if (destId < 1) throw 'destId must be an integer greater than 0'
+		if (destId === originId) throw 'destId and originId cannot be equal'
 
 		// process the request
 		console.log('getting route by origin and destination IDs')
@@ -63,7 +63,7 @@ export async function createRoute(req, res, next) {
 		// validate request
 		if (!validationResult.valid) throw parseValidationErrors(validationResult.errors)
 		if (Object.keys(body).length > createRouteRequestSchema.required.length) {
-			throw ['request body must only have attributes: ' + createRouteRequestSchema.required.join(', ')]
+			throw 'request body must only have attributes: ' + createRouteRequestSchema.required.join(', ')
 		}
 		// process the request
 		console.log('creating route')
@@ -85,7 +85,7 @@ export async function deleteRouteById(req, res, next) {
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 
 		// process the request

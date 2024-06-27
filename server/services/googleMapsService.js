@@ -1,4 +1,3 @@
-
 const geocodeAPIEndpoint = 'https://maps.googleapis.com/maps/api/geocode/json'
 const routesAPIEndpoint = 'https://maps.googleapis.com/maps/api/directions/json'
 
@@ -10,11 +9,14 @@ export async function getLocationByAddress(address) {
 			'key' : process.env.GOOGLE_MAPS_API_KEY
 		})
 		var response = await fetch(geocodeAPIEndpoint + '?' + params)
-			.then(function(response) {
-		    // The response is a Response instance.
-		    // You parse the data into a useable format using `.json()`
-		    return response.json();
-		  })
+		.then(function(response) {
+			return response.json();
+		}).then(response => {
+			if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
+				throw {name: 'Google Resource Not Found', message: 'Address not found.'}
+			}
+			return response
+		})
 		return response
 		// var coords = response.results[0].geometry.location
 		// return coords
@@ -28,27 +30,25 @@ export async function getLocationByAddress(address) {
 
 export async function getLocationByLatLng(lat, lng) {
 	try {
-		console.log('asking google for address')
 		var params = new URLSearchParams({
 			'latlng' : lat + ',' + lng,
 			'location_type' : 'ROOFTOP',
 			'result_type' : 'street_address',
 			'key' : process.env.GOOGLE_MAPS_API_KEY
 		})
-		console.log('params:')
-		console.log(params)
-		var response = await fetch(geocodeAPIEndpoint + '?' + params)
-			.then(function(response) {
-		    // The response is a Response instance.
-		    // You parse the data into a useable format using `.json()`
-		    return response.json();
-		  })
-		return response
 		// the topmost result is the most specific address for the given coordinates,
 		// according to Google's API documentation
-
-		// var address = response.reults[0].formatted_address
-		// return address
+		return await fetch(geocodeAPIEndpoint + '?' + params)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(response => {
+			if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
+				console.log('throwing error in google service')
+				throw {name: 'Google Resource Not Found', message: 'Address for given coordinates does not exist.'}
+			}
+			return response
+		})
 	}
 	catch(err) {
 		console.log('error in google service:')
@@ -70,16 +70,16 @@ export async function getTrip(origin, destination, departureTime, trafficModel='
 			'key' : process.env.GOOGLE_MAPS_API_KEY
 		})
 		params = new URLSearchParams(params)
-		var response = await fetch(routesAPIEndpoint + '?' + params)
-			.then(function(response) {
-		    // The response is a Response instance.
-		    // You parse the data into a useable format using `.json()`
-		    return response.json();
-		  })
-		// console.log('generated trip')
-		// console.log(response)
-		return response
-		
+		return await fetch(routesAPIEndpoint + '?' + params)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(response => {
+			if (response.status === 'NOT_FOUND') {
+				throw {name: 'Google Resource Not Found', message: 'One or more addresses not found.'}
+			}
+			return response
+		})
 	}
 	catch(err) {
 		console.log('error in google service:')
@@ -89,15 +89,23 @@ export async function getTrip(origin, destination, departureTime, trafficModel='
 }
 
 export async function getTripDuration(origin, destination, departureTime, trafficModel='best_guess') {
-	// console.log('getting trip from google')
-	// console.log([origin, destination, departureTime, trafficModel])
-
-	var response = await getTrip(origin, destination, departureTime, trafficModel).then(trip => {
-		// console.log(trip)
-		return trip
-	})
-	// console.log(response.routes[0].legs)
-	return durationInMinutes(response.routes[0].legs[0].duration_in_traffic.value)
+	try {
+		var response = await getTrip(origin, destination, departureTime, trafficModel).then(trip => {
+			// console.log(trip)
+			return trip
+		})
+		// console.log(response.routes[0].legs)
+		if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
+			throw {name: 'Google Resource Not Found', message: 'One or more addresses not found.'}
+		}
+		if (!response.routes[0].legs[0].duration_in_traffic.value) {
+			throw {name: 'Internal Server Error', message: 'Unknown error occurred while processing response from Google Maps'}
+		}
+		return durationInMinutes(response.routes[0].legs[0].duration_in_traffic.value)
+	}
+	catch (err) {
+		throw err
+	}
 }
 
 function durationInMinutes(numSeconds) {
@@ -105,15 +113,38 @@ function durationInMinutes(numSeconds) {
 	return Math.ceil(numSeconds / 60)
 }
 
-export async function getCoordsfromAddress(address) {
-	var response = await getLocationByAddress(address)
-	return response.results[0].geometry.location
+export async function getCoordsFromAddress(address) {
+	try {
+		var response = await getLocationByAddress(address)
+		console.log(response)
+		if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
+			throw {name: 'Google Resource Not Found', message: 'Address not found.'}
+		}
+		if (!response.results[0].geometry.location) {
+			throw {name: 'Internal Server Error', message: 'Unknown error occurred while processing response from Google Maps'}
+		}
+		return response.results[0].geometry.location
+	}
+	catch (err) {
+		throw err
+	}
 }
 
 export async function getAddressFromCoords(lat, lng) {
-	var response = await getLocationByLatLng(lat, lng)
-	// console.log(response)
-	return response.results[0].formatted_address
+	try {
+		var response = await getLocationByLatLng(lat, lng)
+		if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
+			throw {name: 'Google Resource Not Found', message: 'Address for given coordinates does not exist.'}
+		}
+		// console.log(response)
+		if (!response.results[0].formatted_address) {
+			throw {name: 'Internal Server Error', message: 'Unknown error occurred while processing response from Google Maps'}
+		}
+		return response.results[0].formatted_address
+	}
+	catch (err) {
+		throw err
+	}
 }
 
 
