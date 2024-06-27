@@ -1,6 +1,4 @@
-import { googleMapsService } from './index.js'
 import { routeRepository } from '../repositories/index.js'
-
 
 export async function getRouteById(id) {
 	// Cases:
@@ -21,20 +19,20 @@ export async function getRouteByOriginAndDestination(originId, destId) {
 	// route is not in the database: create and return a new route, 201 created
 	try {
 		return await routeRepository.getRouteByOriginAndDestination(originId, destId)
-			.then((route) => {
-				if (Object.keys(route).length == 0) {
-					var body = {
-						'originId' : originId,
-						'destId' : destId
-					}
-					// return {}
-					return routeRepository.createRoute(body).then(() => {
-						// return {}
-						return routeRepository.getRouteByOriginAndDestination(originId, destId)
-					})
+		.then((route) => {
+			if (Object.keys(route).length == 0) {
+				var body = {
+					'originId' : originId,
+					'destId' : destId
 				}
-				else return route
-			})
+				// return {}
+				return routeRepository.createRoute(body).then(() => {
+					// return {}
+					return routeRepository.getRouteByOriginAndDestination(originId, destId)
+				})
+			}
+			else return route
+		})
 	}
 	catch (err) {
 		throw err

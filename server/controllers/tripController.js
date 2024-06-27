@@ -17,7 +17,7 @@ export async function getTripById(req, res, next) {
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 
 		// process the request
@@ -39,9 +39,9 @@ export async function getTripByRouteAndStartTime(req, res, next) {
 		startTime = Number(startTime)
 
 		// validate request
-		if (!Number.isInteger(routeId) || routeId < 1) throw ['routeId must be an integer greater than 0']
+		if (!Number.isInteger(routeId) || routeId < 1) throw 'routeId must be an integer greater than 0'
 		if (!Number.isInteger(startTime) || startTime < now) {
-			throw ['startTime must be a future datetime in milliseconds, greater than now: ' + new Date().getTime()]
+			throw 'startTime must be a future datetime in milliseconds, greater than now: ' + new Date().getTime()
 		}
 
 		// process the request
@@ -51,7 +51,9 @@ export async function getTripByRouteAndStartTime(req, res, next) {
 		res.send(trip)
 	}
 	catch (err) {
-		next({status: 400, error: 'Bad Request', messages: err})
+		var status = !err.name ? 400 : err.name === "Google Resource Not Found" ? 422 : 500
+		var name = err.name || 'Bad Request'
+		next({status: status, error: name, messages: err.message || err})
 	}
 }
 
@@ -63,11 +65,11 @@ export async function getSomeTrips(req, res, next) {
 		startTime = Number(startTime)
 		numTrips = Number(numTrips)
 
-		if (!Number.isInteger(routeId) || routeId < 1) throw ['routeId must be an integer greater than 0']
+		if (!Number.isInteger(routeId) || routeId < 1) throw 'routeId must be an integer greater than 0'
 		if (!Number.isInteger(startTime) || startTime < now) {
-			throw ['startTime must be a future datetime in milliseconds, greater than now: ' + new Date().getTime()]
+			throw 'startTime must be a future datetime in milliseconds, greater than now: ' + new Date().getTime()
 		}
-		if (!Number.isInteger(numTrips) || numTrips < 1 || numTrips > 10) throw ['numTrips must be an integer between 1 and 10, inclusive']
+		if (!Number.isInteger(numTrips) || numTrips < 1 || numTrips > 10) throw 'numTrips must be an integer between 1 and 10, inclusive'
 		
 		console.log('getting some trips')
 		var result = await tripService.getSomeTrips(routeId, startTime, numTrips)
@@ -75,7 +77,9 @@ export async function getSomeTrips(req, res, next) {
 		res.send(result)
 	}
 	catch (err) {
-		next({status: 400, error: 'Bad Request', messages: err})
+		var status = !err.name ? 400 : err.name === "Google Resource Not Found" ? 422 : 500
+		var name = err.name || 'Bad Request'
+		next({status: status, error: name, messages: err.message || err})
 	}
 }
 
@@ -88,10 +92,10 @@ export async function createTrip(req, res, next) {
 		// validate request
 		if (!validationResult.valid) throw parseValidationErrors(validationResult.errors)
 		if (body.startTime < now) {
-			throw ['startTime must be a future datetime in milliseconds, greater than ' + now]
+			throw 'startTime must be a future datetime in milliseconds, greater than ' + now
 		}
 		if (Object.keys(body).length > createTripRequestSchema.required.length) {
-			throw ['request body must only have attributes: ' + createTripRequestSchema.required.join(', ')]
+			throw 'request body must only have attributes: ' + createTripRequestSchema.required.join(', ')
 		}
 		
 		// process the request
@@ -113,7 +117,7 @@ export async function deleteTripById(req, res, next) {
 		// all erroneous inputs for id are implicitly caught by the isInteger check
 		// or by requiring the result of the Number() function to be greater than 0
 		if (!Number.isInteger(id) || id < 1) {
-			throw ['id must be an integer greater than 0']
+			throw 'id must be an integer greater than 0'
 		}
 
 		// process the request

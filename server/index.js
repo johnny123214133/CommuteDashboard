@@ -25,7 +25,7 @@ app.use('/trip', tripRouter)
 // general error handler
 app.use(function (err, req, res, next) {
   console.log('An Error Occurred: ', err.status)
-  const error = new ErrorResponse(err.status, err.error, err.messages)
+  const error = new ErrorResponse(err.status, err.name || err.error, err.messages)
   console.log(error)
   res.status(err.status || 500).send(error);
 })
