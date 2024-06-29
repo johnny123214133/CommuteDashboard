@@ -39,8 +39,9 @@ export async function getLocationById(req, res, next) {
 
 export async function getLocationByAddress(req, res, next) {
 	try{
-		// console.log('get location by address')
+		console.log('get location by address')
 		var address = req.params.address
+		console.log(address)
 
 		// validate request
 		if (!typeof address === 'string') {
@@ -50,6 +51,7 @@ export async function getLocationByAddress(req, res, next) {
 		// console.log('getting location by address')
 		var result = await locationService.getLocationByAddress(address)
 		// res.send('got location by address')
+		console.log(result)
 		res.send(result)
 	}
 	catch (err) {

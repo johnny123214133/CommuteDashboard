@@ -116,7 +116,7 @@ function durationInMinutes(numSeconds) {
 export async function getCoordsFromAddress(address) {
 	try {
 		var response = await getLocationByAddress(address)
-		console.log(response)
+		// console.log(response)
 		if (response.status === 'NOT_FOUND' || response.status ==='ZERO_RESULTS') {
 			throw {name: 'Google Resource Not Found', message: 'Address not found.'}
 		}
