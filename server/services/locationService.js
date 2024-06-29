@@ -26,19 +26,23 @@ export async function getLocationByAddress(address) {
 			if (Object.keys(location).length == 0) {
 				return googleMapsService.getCoordsFromAddress(address)
 				.then((coords) => {
-					var body = {
-						'address' : address,
-						'lat' : coords.lat,
-						'lng' : coords.lng
-					}
-					return createLocation(body).then(() => {
-						return locationRepository.getLocationByAddress(address)
+					return locationRepository.getLocationByLatLng(coords.lat, coords.lng)
+					.then((result) => {
+						if (Object.keys(result).length == 0) {
+							var body = {
+								'address' : address,
+								'lat' : coords.lat,
+								'lng' : coords.lng
+							}
+							return createLocation(body).then(() => {
+								return locationRepository.getLocationByAddress(address)
+							})
+						}
+						else return location
 					})
 				})
 			}
-			else {
-				return location
-			}
+			else return location
 		})
 	}
 	catch (err) {
