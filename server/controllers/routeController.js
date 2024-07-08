@@ -22,6 +22,8 @@ export async function getRouteById(req, res, next) {
 
 		// process the request
 		console.log('getting route by id')
+		// console.log(id)
+		// console.log()
 		var result = await routeService.getRouteById(id)
 		// res.send('got route by id')
 		res.send(result)
@@ -46,6 +48,8 @@ export async function getRouteByOriginAndDestination(req, res, next) {
 
 		// process the request
 		console.log('getting route by origin and destination IDs')
+		// console.log(originId + ' ' + destId)
+		// console.log()
 		var result = await routeService.getRouteByOriginAndDestination(originId, destId)
 		// res.send('got route by origin and destination IDs')
 		res.send(result)
@@ -68,6 +72,7 @@ export async function createRoute(req, res, next) {
 		// process the request
 		console.log('creating route')
 		// console.log(body)
+		// console.log()
 		await routeService.createRoute(body)
 		// res.send(response)
 		res.send('created route')
