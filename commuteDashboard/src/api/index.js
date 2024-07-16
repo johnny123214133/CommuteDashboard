@@ -8,25 +8,38 @@ const api = axios.create({
 })
 
 export const getLocationByAddress = (address) => {
-	try {
+	// try {
 		return api.get(`/location/address/${address}`)
-	} catch (err) {
-		throw err
-	}
+		.catch(error => {
+			console.log(error)
+			throw error
+		})
+	// } catch (err) {
+	// 	throw err
+	// }
 }
 export const getRouteByEndpointIds = (originId, destId) => {
-	try {
+	// try {
 		return api.get(`/route/${originId}/${destId}`)
-	} catch (err) {
-		throw err
-	}
+		.catch(error => {
+			console.log(error)
+			throw error
+		})
+	// } catch (err) {
+	// 	throw err
+	// }
 }
 export const getTripsByRouteIdAndStartTime = (routeId, startTime, numTrips) => {
-	try {
+	// try {
 		return api.get(`trip/${routeId}/${startTime}/${numTrips}`)
-	} catch (err) {
-		throw err
-	}
+		.catch(error => {
+			console.log(error)
+			throw error
+		})
+	// } catch (err) {
+	// 	// console.log(err)
+	// 	throw err
+	// }
 }
 
 const commuteApi = {

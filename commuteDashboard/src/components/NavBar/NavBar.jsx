@@ -58,97 +58,99 @@ function NavBar() {
 		setShowMorning(!showMorning)
 	}
 
+	function validateInput() {
+		if (typeof input.originAddress !== 'string' || input.originAddress.length < 1) throw 'Origin address must be a string of length greater than 0.'
+		if (typeof input.destinationAddress !== 'string' || input.destinationAddress.length < 1) throw 'Destination address must be a string of length greater than 0.'
+		if (input.startDate < new Date().setHours(0, 0, 0, 0)) throw 'Start date must be today or a future date.'
+		if (input.startDate + (input.morningTimeDelta[0] * 60 + input.morningTimeDelta[1]) * 60 * 1000 < new Date().getTime()) throw 'Morning start date and time must be now or in the future.'
+		if (input.startDate + (input.eveningTimeDelta[0] * 60 + input.eveningTimeDelta[1]) * 60 * 1000 < new Date().getTime()) throw 'Evening start date and time must be now or in the future.'
+		if (input.morningTimeDelta[0] > input.eveningTimeDelta[0] || (input.morningTimeDelta[0] == input.eveningTimeDelta[0] && input.morningTimeDelta[1] > input.eveningTimeDelta[0])) throw 'Morning start time must not be later than evening start time.'
+	}
+
 	function handleSubmit(event) {
-		event.preventDefault()
-		console.log(input)
-		// TODO: handle submit.
-		// validate submission
-		setParams(input)
+		try {
+			event.preventDefault()
+			console.log(input)
+			// TODO: handle submit.
+			// validate submission
+			validateInput()
+			setParams(input)
+		} 
+		catch (err) {
+			alert(err)
+		}
 	}
 
 	return (
 		<>
 			<Stack className="sticky-top pt-4 px-2 bg-white" direction="vertical">
-			{/*<Form className="" onSubmit={handleSubmit}>*/}
-				{/*<Row>*/}
 				<Row>
 					<Col md={6}>
-						<Form.Group as={Row} className="mb-1 px-2" controlId="originInput">
-							<Form.Label column sm={4} md={3}>Origin Address</Form.Label>
-							<Col sm={8} md={9}>
+						<Form.Group as={Row} className="mb-1" controlId="originInput">
+							<Form.Label column sm={4} md={4}>Origin Address</Form.Label>
+							<Col sm={8} md={8}>
 								<Form.Control type="text" onChange={handleOriginChange} placeholder="1234 Main St. Anytown, US" />
 							</Col>
-							{/*<Form.Text className="text-muted"></Form.Text>*/}
 						</Form.Group>
 					</Col>
-					<Col md={3}>
-						<Form.Group as={Row} className="mb-1 px-2" controlId="morningStartTimeInput">
-							<Col sm={8} md={7}>
-								<Form.Label column >Morning Start Time</Form.Label>
+					<Col md={6}>
+						<Row>
+							<Col md={7}>
+								<Form.Group as={Row} className="mb-1" controlId="morningStartTimeInput">
+									<Col sm={8} md={7}>
+										<Form.Label column >Morning Start Time</Form.Label>
+									</Col>
+									<Col sm={4} md={5}>
+										<Form.Control type="time" onChange={handleMorningTimeChange} />
+									</Col>
+								</Form.Group>
 							</Col>
-							<Col sm={4} md={5}>
-								<Form.Control type="time" onChange={handleMorningTimeChange} />
+							<Col md={5}>
+								<Form.Group as={Row} className="mb-1" controlId="startDateInput">
+									<Col sm={6} md={5}>
+										<Form.Label column >Start Date</Form.Label>
+									</Col>
+									<Col sm={6} md={7}>
+										<Form.Control type="date" onChange={handleDateChange} />
+									</Col>
+								</Form.Group>
 							</Col>
-							{/*<TimePicker onChange={onMorningTimeChange} value={input.morningStartTime} />*/}
-						</Form.Group>
-					</Col>
-					<Col md={3}>
-						<Form.Group as={Row} className="mb-1 px-2" controlId="startDateInput">
-							<Col sm={6} md={6}>
-								<Form.Label column >Start Date</Form.Label>
-							</Col>
-							<Col sm={6} md={6}>
-								<Form.Control type="date" onChange={handleDateChange} />
-							</Col>
-							{/*<DatePicker 
-								selected={input.startDate} 
-								onChange={handleChangeDate} 
-								minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
-							/>*/}
-						</Form.Group>
+						</Row>
 					</Col>
 				</Row>
 				<Row className="my-2">
-				{/*<Stack direction="horizontal">*/}
 					<Col md={6}>
-						<Form.Group as={Row} className="mb-1 px-2" controlId="destinationInput">
-							<Col sm={4} md={3}>
+						<Form.Group as={Row} className="mb-1" controlId="destinationInput">
+							<Col sm={4} md={4}>
 								<Form.Label column >Destination Address</Form.Label>
 							</Col>
-							<Col sm={8} md={9}>
+							<Col sm={8} md={8}>
 								<Form.Control type="text" onChange={handleDestinationChange} placeholder="5678 Center St. Anytown, US" />
 							</Col>
-							{/*<Form.Text className="text-muted"></Form.Text>*/}
 						</Form.Group>
 					</Col>
-					<Col md={3}>
-						<Form.Group as={Row} className="mb-1 px-2" controlId="eveningStartTimeInput">
-							<Col sm={8} md={7}>
-								<Form.Label column >Evening Start Time</Form.Label>
+					<Col md={6}>
+						<Row>
+							<Col md={7}>
+								<Form.Group as={Row} className="mb-1" controlId="eveningStartTimeInput">
+									<Col sm={8} md={7}>
+										<Form.Label column >Evening Start Time</Form.Label>
+									</Col>
+									<Col sm={4} md={5}>
+										<Form.Control type="time" onChange={handleEveningTimeChange} />
+									</Col>
+								</Form.Group>
 							</Col>
-							<Col sm={4} md={5}>
-								<Form.Control type="time" onChange={handleEveningTimeChange} />
+							<Col md={5} className="align-middle">
+								<Stack direction="horizontal" className="mb-1">
+									<Button className="ms-auto" variant="secondary" onClick={handleSubmit}>
+										Submit
+									</Button>
+								</Stack>
 							</Col>
-							{/*<TimePicker onChange={onEveningTimeChange} value={input.eveningStartTime} />*/}
-						</Form.Group>
-					</Col>
-					<Col md={3} className="px-2 align-middle">
-						{/*<br />*/}
-						<Stack direction="horizontal" className="mb-1 px-2">
-							<Form.Switch className="" 
-								id="morningToggle" 
-								onChange={handleToggleMorningSwitch} 
-								checked={showMorning} 
-								label={showMorning ? "Show Morning" : "Show Evening"} 
-							/>
-							<Button className="ms-auto" variant="secondary" onClick={handleSubmit}> {/*type="submit"*/}
-								Submit
-							</Button>
-						</Stack>
+						</Row>
 					</Col>
 				</Row>
-				{/*</Stack>*/}
-			{/*</Form>*/}
 			</Stack>
 		</>
 	)

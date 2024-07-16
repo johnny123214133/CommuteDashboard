@@ -62,6 +62,6 @@ export async function getTrips(params) {
 		return await trips
 	}
 	catch (err) {
-	
+		throw err
 	}
 }

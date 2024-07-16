@@ -56,7 +56,7 @@ export default function CommuteTable() {
 					{/*<td>{arrivalEstimates.departureTimes.length}</td>*/}
 					{arrivalEstimates.departureTimes.map(element => {
 						return (
-							<td style={{fontSize: 11}}><b>{element}</b></td>
+							<td style={{fontSize: 11}} key={'d_' + element}><b>{element}</b></td>
 						)
 					})}
 				</tr>
@@ -64,7 +64,7 @@ export default function CommuteTable() {
 					<td>Best Case Arrival Time</td>
 					{arrivalEstimates && arrivalEstimates.bestArrivalTimes.map(element => {
 						return (
-							<td>{element}</td>
+							<td key={'b_' + element}>{element}</td>
 						)
 					})}
 				</tr>
@@ -72,7 +72,7 @@ export default function CommuteTable() {
 					<td>Avg. Case Arrival Time</td>
 					{arrivalEstimates && arrivalEstimates.avgArrivalTimes.map(element => {
 						return (
-							<td>{element}</td>
+							<td key={'a_' + element}>{element}</td>
 						)
 					})}
 				</tr>
@@ -80,7 +80,7 @@ export default function CommuteTable() {
 					<td>Worst Case Arrival Time</td>
 					{arrivalEstimates && arrivalEstimates.worstArrivalTimes.map(element => {
 						return (
-							<td>{element}</td>
+							<td key={'w_' + element}>{element}</td>
 						)
 					})}
 				</tr>

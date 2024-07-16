@@ -8,11 +8,13 @@ import Stack from 'react-bootstrap/Stack'
 import NavBar from './NavBar/NavBar.jsx'
 import CommuteAnalysis from './CommuteAnalysis.jsx'
 import GoogleMap from './GoogleMap.jsx'
+import { IsLoadingContext } from './contexts/CommuteDataContext/CommuteDataContext'
 
 import './Dashboard.css'
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 
 function Dashboard() {
+	const [isLoading] = useContext(IsLoadingContext)
 	// const [origin, setOrigin] = useState('')
 
 	// function handleOriginChange(event) {
@@ -26,11 +28,14 @@ function Dashboard() {
 
 	return (
 		<>
-				<NavBar />
+			<NavBar />
+			{isLoading &&  (<h1>Loading...</h1>) }
+			{!isLoading && (
 				<Stack direction="horizontal" gap={2}>
 					<div className="p-2"><GoogleMap /></div>
 					<div className="p-2 " style={{width: "100%"}}><CommuteAnalysis /></div>
 				</Stack>
+			)}
 		</>
 	)
 }
