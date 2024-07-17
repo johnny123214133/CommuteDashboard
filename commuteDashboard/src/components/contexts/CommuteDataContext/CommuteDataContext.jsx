@@ -1,9 +1,9 @@
-import React, { useState, useEffect, createContext, useMemo } from 'react'
+import React, { useState, useEffect, createContext, useMemo, useRef } from 'react'
 import { getRouteDetails, getTrips } from './functions.js'
 
 // handle all the logic and state for collecting form input, 
-// fetching location and route data from the dashboard's api,
-// clean and provide response data for the rest of the app
+// fetch location and route data, then trip data,
+// clean and provide data for the rest of the app's functionality
 
 export const RouteParamsContext = React.createContext()
 export const RouteDataContext = React.createContext()
@@ -22,7 +22,13 @@ export default function CommuteDataContext({Children}) {
 	const [activeDay, setActiveDay] = useState()
 	const [isLoading, setIsLoading] = useState(false)
 
-	// TODO: error handling, is loading
+	const abortControllerRef = useRef(null)
+
+	// Until I figure out how to group all my state updates 
+	// into one atomic unit, I'll have to rely on clearing
+	// the states myself and work around any side effects of doing so.
+	// But because the data is all modeled and controlled in this component, 
+	// it's not as bad as it could be
 	const resetData = () => {
 		setParams()
 		setRouteData()
@@ -37,54 +43,42 @@ export default function CommuteDataContext({Children}) {
 
 		const fetchData = async () => {
 			try {
+				// instantiate an abort controller to prevent race conditions
+				if (abortControllerRef.current !== null) abortControllerRef.current.abort()
+				abortControllerRef.current = new AbortController()
+				
+				// show lodaing message while data is loading
 				setIsLoading(true)
-				// console.log('fetching route data with params:')
-				// console.log(params)
-				await getRouteDetails(params)
+				// fetch and set location and route details
+				await getRouteDetails(params, abortControllerRef.current.signal)
 				.then(data => {
-					// console.log(data)
 					setRouteData(data)
 					return data
 				}).then(params => {
-					// console.log('fetching trip data with params:')
-					// console.log(params)
-					return getTrips(params)
+					// fetch and set trip data for the returned routes
+					return getTrips(params, abortControllerRef.current.signal)
 				}).then(trips => {
 					console.log(trips)
 					setTripData(trips)
+					// create and set state for daily charts and tables
 					let days = Object.keys(trips.morning)
 					days = days.map(day => parseInt(day))
 					days.sort()
 					setWeekdays(days)
-					// console.log(typeof days[0])
 					setActiveDay(days[0])
 					setIsLoading(false)
 				})
-					// .catch(error => {
-					// 	console.log('ERROR IN CONTEXT')
-					// 	console.log(error)
-
-					// })
-				// })
 				.catch(error => {
-					console.log('ERROR IN CONTEXT')
 					console.log(error)
 					resetData()
+					const message = error.response.data.messages ? error.response.data.messages.join('\n') : error
 					alert(error.response.data.messages.join('\n'))
-
 				})
 			}
 			catch (error) {
-				console.log('unexpected error occurred')
-				console.log(error)
-				alert(error)
-				// reset params
-				// Until I figure out how to group all my state updates 
-				// in this useEffect into one atomic unit, I'll have to rely on clearing
-				// the states myself and work around any side effects of doing so.
-				// But because the data is all modeled in this component, 
-				// it's not as bad as it could be
 				resetData()
+				console.log(error)
+				alert('Unexpected error occurred.')				
 			}
 			finally {
 				setIsLoading(false)
@@ -93,13 +87,8 @@ export default function CommuteDataContext({Children}) {
 		if (!isLoading) {
 			fetchData()
 		}
-	  return () => { setIsLoading(false) }
+	  // return () => { setIsLoading(false) }
 	}, [params])
-
-	useEffect(() => {
-		if (!weekdays || !activeDay) return
-		console.log('states set for commute analysis')
-	}, [weekdays, activeDay])
 
 	return (
 		<>

@@ -10,6 +10,8 @@ import Stack from 'react-bootstrap/Stack'
 // import 'react-time-picker/dist/TimePicker.css';
 // import 'react-clock/dist/Clock.css';
 
+import { HOUR_TO_MINUTES, MINUTE_TO_MILLISECONDS } from '../../utils/constants.js'
+
 import './NavBar.css'
 
 import { useState, useContext } from 'react'
@@ -31,48 +33,66 @@ function NavBar() {
 	function handleOriginChange(event) {
 		setInput({...input, originAddress : event.target.value})
 	}
+
 	function handleDestinationChange(event) {
 		setInput({...input, destinationAddress : event.target.value})
 	}
 
 	function handleDateChange(event) {
 		var dateString = event.target.value
-		var parts = dateString.split('-')
-		dateString = [parts[1], parts[2], parts[0]].join('-')
-		// console.log(new Date(dateString))
-		// console.log(new Date(dateString).getTime())
-
+		var components = dateString.split('-')
+		dateString = [components[1], components[2], components[0]].join('-')
     setInput({...input, startDate : new Date(dateString).getTime()})
 	}
+
 	function handleMorningTimeChange(event) {
-		var parts = event.target.value.split(':')
-		parts = parts.map(item => {return Number(item)})
-		setInput({...input, morningTimeDelta : parts})
+		var components = event.target.value.split(':')
+		components = components.map(item => {return Number(item)})
+		setInput({...input, morningTimeDelta : components})
 	}
+
 	function handleEveningTimeChange(event) {
-		var parts = event.target.value.split(':')
-		parts = parts.map(item => {return Number(item)})
-		setInput({...input, eveningTimeDelta : parts})
+		var components = event.target.value.split(':')
+		components = components.map(item => {return Number(item)})
+		setInput({...input, eveningTimeDelta : components})
 	}
+
 	function handleToggleMorningSwitch(event) {
 		setShowMorning(!showMorning)
 	}
 
+	function adjustTime(startTime, timeDelta) {
+		return startTime + (timeDelta[0] * HOUR_TO_MINUTES + timeDelta[1]) * MINUTE_TO_MILLISECONDS
+	}
+
 	function validateInput() {
-		if (typeof input.originAddress !== 'string' || input.originAddress.length < 1) throw 'Origin address must be a string of length greater than 0.'
-		if (typeof input.destinationAddress !== 'string' || input.destinationAddress.length < 1) throw 'Destination address must be a string of length greater than 0.'
-		if (input.startDate < new Date().setHours(0, 0, 0, 0)) throw 'Start date must be today or a future date.'
-		if (input.startDate + (input.morningTimeDelta[0] * 60 + input.morningTimeDelta[1]) * 60 * 1000 < new Date().getTime()) throw 'Morning start date and time must be now or in the future.'
-		if (input.startDate + (input.eveningTimeDelta[0] * 60 + input.eveningTimeDelta[1]) * 60 * 1000 < new Date().getTime()) throw 'Evening start date and time must be now or in the future.'
-		if (input.morningTimeDelta[0] > input.eveningTimeDelta[0] || (input.morningTimeDelta[0] == input.eveningTimeDelta[0] && input.morningTimeDelta[1] > input.eveningTimeDelta[0])) throw 'Morning start time must not be later than evening start time.'
+		if (typeof input.originAddress !== 'string' || input.originAddress.length < 1) {
+			throw 'Origin address must be a string of length greater than 0.'
+		}
+		if (typeof input.destinationAddress !== 'string' || input.destinationAddress.length < 1) {
+			throw 'Destination address must be a string of length greater than 0.'
+		}
+		if (input.startDate < new Date().setHours(0, 0, 0, 0)) {
+			throw 'Start date must be today or a future date.'
+		}
+		if (adjustTime(input.startTime, input.morningTimeDelta) < new Date().getTime()) {
+			throw 'Morning start date and time must be now or in the future.'
+		}
+		if (adjustTime(input.startTime, input.eveningTimeDelta) < new Date().getTime()) {
+			throw 'Evening start date and time must be now or in the future.'
+		}
+		if (input.morningTimeDelta[0] > input.eveningTimeDelta[0] || 
+			(input.morningTimeDelta[0] == input.eveningTimeDelta[0] && 
+				input.morningTimeDelta[1] > input.eveningTimeDelta[0])
+		) {
+			throw 'Morning start time must not be later than evening start time.'
+		}
 	}
 
 	function handleSubmit(event) {
 		try {
 			event.preventDefault()
 			console.log(input)
-			// TODO: handle submit.
-			// validate submission
 			validateInput()
 			setParams(input)
 		} 
