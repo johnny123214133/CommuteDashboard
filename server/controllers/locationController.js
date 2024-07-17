@@ -12,6 +12,9 @@ export async function getLocationRoot(req, res) {
 
 export async function getLocationById(req, res, next) {
 	try{
+		if (req.params.id === 'address') {
+			next()
+		}
 		// console.log('get location by id')
 		// console.log(req.params.id)
 		var id = Number(req.params.id)
