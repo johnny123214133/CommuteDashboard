@@ -83,6 +83,7 @@ export default function CommuteDataContext({Children}) {
 			finally {
 				setIsLoading(false)
 			}
+			return () => { if (abortControllerRef.current !== null) abortControllerRef.current.abort() }
 		}
 		if (!isLoading) {
 			fetchData()
