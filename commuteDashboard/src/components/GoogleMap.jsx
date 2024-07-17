@@ -9,7 +9,7 @@ export default function GoogleMap() {
 	return (
 		<>
 			{routeData && (
-				<div style={{ width: '40vw', height: '70vh' }}>
+				<div className="flex-grow-1" style={{ width : '40vw', height : '80vh'}}>
 					<APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
 						<Map
 							fullscreenControl={false}

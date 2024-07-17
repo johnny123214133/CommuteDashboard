@@ -24,7 +24,7 @@ export default function CommuteDurationsGraph() {
 	// chart needs to be initialized with some data. without it, 
 	// there's a weird bug when the first chart loaded where the evening data, 
 	// and the morning data won't load for the default active day when toggled. 
-	// If you change days first though, the chart works as expected.
+	// If you change days and then return to the initial day, the chart works as expected.
 	// It likely has to do with the order of state and render updates to the chart
 	const [series, setSeries] = useState([{
 		data: [
@@ -35,15 +35,15 @@ export default function CommuteDurationsGraph() {
 		]
 	}])
 
+	// map data from context to a format apex charts expects
 	function mapData(tripsData, showMorning) {
 		if (!tripsData || showMorning === undefined) return null
 		
 		let data = showMorning ? tripData.morning[activeDay] : tripData.evening[activeDay]
-		// console.log(data)
-		// let chartData = []
 		data = data.map(datum => {
 			let date = new Date(datum.start_time)
-			let timestamp = `${date.getHours()}:${date.getMinutes()}`
+			// let timestamp = `${date.getHours()}:${date.getMinutes()}`
+			let timestamp = date.toTimeString().substring(0,5)
 			return {
 				x: timestamp,
 				y: [
@@ -55,14 +55,13 @@ export default function CommuteDurationsGraph() {
 				]
 			}
 		})
-		console.log(data)
 		return [{data}]
 	}
 
 	useEffect(() => {
 		if (!tripData || !activeDay || showMorning === undefined) return
 		setSeries(mapData(tripData, showMorning))
-		setOptions({...options, title : {...options.title, text : ('Trip Durations for ' + new Date(activeDay).toDateString())}})
+		setOptions({...options, title : {...options.title, text : ('Trip Durations (in Minutes) for ' + new Date(activeDay).toDateString())}})
 	}, [tripData, activeDay, showMorning])
 	
 	return (

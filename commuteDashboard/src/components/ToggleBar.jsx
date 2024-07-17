@@ -1,19 +1,16 @@
+import React, { useState, useEffect, useContext } from 'react'
+
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Stack from 'react-bootstrap/Stack'
 
-import React, { useState, useEffect, useContext } from 'react'
-
 import { ActiveDayContext, WeekdaysContext, ShowMorningContext} from './contexts/CommuteDataContext/CommuteDataContext.jsx'
+
 export default function ToggleBar() {
-	
 	const [activeDay, setActiveDay] = useContext(ActiveDayContext)
 	const [days] = useContext(WeekdaysContext)
 	const [dayNames, setDayNames] = useState()
 	const [showMorning, setShowMorning] = useContext(ShowMorningContext)
-	// console.log(days)
-	// const [days, setDays] = useState(days)
-	// console.log('TYPEOF ', typeof activeDay)
 
 	useEffect(() => {
 		if (!activeDay || !days || !days.includes(activeDay)) return
@@ -39,30 +36,19 @@ export default function ToggleBar() {
 
 	return (
 		<>
-			{/*{dayNames && dayNames.map((day) => {
-      	return (
-      		<div>
-      			<h3>{day[0]}, {day[1]}</h3>
-      		</div>
-      		// <Button key={key} variant="secondary" onClick={handleClick} day={key}>{value}</Button>
-      	)
-      })
-    	}*/}
-
-
-		{dayNames && (
-			<Stack direction="horizontal">
-				<ButtonGroup aria-label="Basic example">
-		      {dayNames.map((day) => {
-			      	return (
-			      		<Button key={day[0]} variant="secondary" onClick={handleClick} day={day[0]}>{day[1]}</Button>
-			      	)
-			      })
-		    	}
-		    </ButtonGroup>
-		    <Button className="ms-auto" variant="secondary" onClick={handleToggleMorning} >{showMorning ? "Showing Morning" : "Showing Evening"}</Button>
-			</Stack>
-		)}
+			{dayNames && (
+				<Stack direction="horizontal">
+					<ButtonGroup aria-label="Basic example">
+						{dayNames.map((day) => {
+								return (
+									<Button key={day[0]} variant="secondary" onClick={handleClick} day={day[0]}>{day[1]}</Button>
+								)
+							})
+						}
+					</ButtonGroup>
+					<Button className="ms-auto" variant="secondary" onClick={handleToggleMorning} >{showMorning ? "Showing Morning" : "Showing Evening"}</Button>
+				</Stack>
+			)}
 		</>
 	)
 }

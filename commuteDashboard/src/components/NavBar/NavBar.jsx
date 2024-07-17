@@ -107,7 +107,9 @@ function NavBar() {
 				<Row>
 					<Col md={6}>
 						<Form.Group as={Row} className="mb-1" controlId="originInput">
-							<Form.Label column sm={4} md={4}>Origin Address</Form.Label>
+							<Form.Label column sm={4} md={4}>
+								<b>Origin Address</b>
+							</Form.Label>
 							<Col sm={8} md={8}>
 								<Form.Control type="text" onChange={handleOriginChange} placeholder="1234 Main St. Anytown, US" />
 							</Col>
@@ -118,7 +120,9 @@ function NavBar() {
 							<Col md={7}>
 								<Form.Group as={Row} className="mb-1" controlId="morningStartTimeInput">
 									<Col sm={8} md={7}>
-										<Form.Label column >Morning Start Time</Form.Label>
+										<Form.Label column >
+											<b>Morning Start Time</b>
+										</Form.Label>
 									</Col>
 									<Col sm={4} md={5}>
 										<Form.Control type="time" onChange={handleMorningTimeChange} />
@@ -128,7 +132,9 @@ function NavBar() {
 							<Col md={5}>
 								<Form.Group as={Row} className="mb-1" controlId="startDateInput">
 									<Col sm={6} md={5}>
-										<Form.Label column >Start Date</Form.Label>
+										<Form.Label column >
+											<b>Start Date</b>
+										</Form.Label>
 									</Col>
 									<Col sm={6} md={7}>
 										<Form.Control type="date" onChange={handleDateChange} />
@@ -142,7 +148,9 @@ function NavBar() {
 					<Col md={6}>
 						<Form.Group as={Row} className="mb-1" controlId="destinationInput">
 							<Col sm={4} md={4}>
-								<Form.Label column >Destination Address</Form.Label>
+								<Form.Label column >
+									<b>Destination Address</b>
+								</Form.Label>
 							</Col>
 							<Col sm={8} md={8}>
 								<Form.Control type="text" onChange={handleDestinationChange} placeholder="5678 Center St. Anytown, US" />
@@ -154,7 +162,9 @@ function NavBar() {
 							<Col md={7}>
 								<Form.Group as={Row} className="mb-1" controlId="eveningStartTimeInput">
 									<Col sm={8} md={7}>
-										<Form.Label column >Evening Start Time</Form.Label>
+										<Form.Label column >
+											<b>Evening Start Time</b>
+										</Form.Label>
 									</Col>
 									<Col sm={4} md={5}>
 										<Form.Control type="time" onChange={handleEveningTimeChange} />

@@ -1,7 +1,4 @@
-// import {CommuteDurationsGraph, CommuteTable, ToggleBar} from './commuteAnalysis'
-// import apis from '../../api'
 import React, {useState, useEffect, createContext, useContext} from 'react'
-// import {TripsContext} from '../App'
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -12,14 +9,10 @@ import ToggleBar from './ToggleBar.jsx'
 import CommuteDurationsGraph from './CommuteDurationsGraph.jsx'
 import CommuteTable from './CommuteTable.jsx'
 
-// export const ActiveDateContext = React.createContext()
-// export const DaysContext = React.createContext()
-
 function CommuteAnalysis() {
 	
 	return (
 		<>
-		{/*<h1>Hello</h1>*/}
 			<Stack className="mx-auto">
 				<div className="p-1">
 					<ToggleBar />
