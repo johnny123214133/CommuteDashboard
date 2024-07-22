@@ -21,24 +21,37 @@ export async function getLocationByAddress(address) {
 	// - create a new location via googleMaps, save it, and return the new location
 	// - if googleMaps cannot create a location, throw an error
 	try {
+		// console.log('in service, getting location by address')
 		return await locationRepository.getLocationByAddress(address)
 		.then((location) => {
+			// console.log('=A=')
+			// console.log(location)
 			if (Object.keys(location).length == 0) {
 				return googleMapsService.getCoordsFromAddress(address)
 				.then((coords) => {
-					var body = {
-						'address' : address,
-						'lat' : coords.lat,
-						'lng' : coords.lng
-					}
-					return createLocation(body).then(() => {
-						return locationRepository.getLocationByAddress(address)
+					// console.log('=B=')
+					// console.log(coords)
+					return locationRepository.getLocationByLatLng(coords.lat, coords.lng)
+					.then((result) => {
+						// console.log('=C=')
+						// console.log(result)
+						if (Object.keys(result).length == 0) {
+							var body = {
+								'address' : address,
+								'lat' : coords.lat,
+								'lng' : coords.lng
+							}
+							// console.log('=D=')
+							// console.log(body)
+							return createLocation(body).then(() => {
+								return locationRepository.getLocationByAddress(address)
+							})
+						}
+						else return result
 					})
 				})
 			}
-			else {
-				return location
-			}
+			else return location
 		})
 	}
 	catch (err) {
@@ -53,6 +66,7 @@ export async function getLocationByLatLng(lat, lng) {
 	// - create a new location via googleMaps, save it, and return the new location
 	// - if googleMaps cannot create a location, throw an error
 	try {
+		console.log('in service, getting location by lat lng')
 		return await locationRepository.getLocationByLatLng(lat, lng)
 		.then((location) => {
 			console.log('got location?')

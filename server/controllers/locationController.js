@@ -12,7 +12,11 @@ export async function getLocationRoot(req, res) {
 
 export async function getLocationById(req, res, next) {
 	try{
+		if (req.params.id === 'address') {
+			next()
+		}
 		// console.log('get location by id')
+		// console.log(req.params.id)
 		var id = Number(req.params.id)
 		// console.log(id)
 		// send to get by address route since param is not just a number
@@ -27,7 +31,9 @@ export async function getLocationById(req, res, next) {
 		}
 
 		// process the request
-		// console.log('getting location by id')
+		console.log('getting location by id')
+		// console.log(id)
+		// console.log()
 		var result = await locationService.getLocationById(id)
 		// res.send('got location by id')
 		res.send(result)
@@ -39,17 +45,21 @@ export async function getLocationById(req, res, next) {
 
 export async function getLocationByAddress(req, res, next) {
 	try{
-		// console.log('get location by address')
+		console.log('get location by address')
 		var address = req.params.address
+		console.log(address)
 
 		// validate request
 		if (!typeof address === 'string') {
 			throw 'address must be a string'
 		}
 		// process the request
-		// console.log('getting location by address')
+		console.log('getting location by address')
+		// console.log(address)
+		// console.log()
 		var result = await locationService.getLocationByAddress(address)
 		// res.send('got location by address')
+		console.log(result)
 		res.send(result)
 	}
 	catch (err) {
@@ -77,6 +87,8 @@ export async function getLocationByLatLng(req, res, next) {
 
 		// process the request
 		console.log('getting location by lat lng')
+		// console.log(lat + ' ' + lng)
+		// console.log()
 		var result = await locationService.getLocationByLatLng(lat, lng)
 		// res.send('got location by lat lng')
 		res.send(result)
@@ -102,6 +114,7 @@ export async function createLocation(req, res, next) {
 		// process the request
 		console.log('creating location')
 		// console.log(body)
+		// console.log()
 		await locationService.createLocation(body)
 		// res.send(response)
 		res.send('created location')
