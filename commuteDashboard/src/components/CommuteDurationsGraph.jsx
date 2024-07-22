@@ -10,14 +10,24 @@ export default function CommuteDurationsGraph() {
 
 	const [options, setOptions] = useState(
 	{
-		plotOptions: {
-			bar: {
-				horizontal: false
+		chart : {
+			toolbar : {
+				show : false
+			}
+		},
+		plotOptions : {
+			bar : {
+				horizontal : false
 			},
 		},
-		title: {
-			text: ('Trip Durations for '),
-			align: 'center'
+		title : {
+			text : ('Trip Durations for '),
+			align : 'center'
+		},
+		xaxis: {
+			labels: {
+				rotate: 45
+			}
 		}
 	})
 

@@ -12,6 +12,7 @@ export const TripDataContext = React.createContext()
 export const WeekdaysContext = React.createContext()
 export const ActiveDayContext = React.createContext()
 export const IsLoadingContext = React.createContext()
+export const ShowInstructionsContext = React.createContext()
 
 export default function CommuteDataContext({Children}) {
 	const [params, setParams] = useState()
@@ -21,6 +22,7 @@ export default function CommuteDataContext({Children}) {
 	const [weekdays, setWeekdays] = useState()
 	const [activeDay, setActiveDay] = useState()
 	const [isLoading, setIsLoading] = useState(false)
+	const [showInstructions, setShowInstructions] = useState(true)
 
 	const abortControllerRef = useRef(null)
 
@@ -35,6 +37,7 @@ export default function CommuteDataContext({Children}) {
 		setTripData()
 		setWeekdays()
 		setActiveDay()
+		setShowInstructions(true)
 	}
 
 	useEffect(() => {
@@ -48,6 +51,7 @@ export default function CommuteDataContext({Children}) {
 				abortControllerRef.current = new AbortController()
 				
 				// show lodaing message while data is loading
+				setShowInstructions(false)
 				setIsLoading(true)
 				// fetch and set location and route details
 				await getRouteDetails(params, abortControllerRef.current.signal)
@@ -94,6 +98,7 @@ export default function CommuteDataContext({Children}) {
 	return (
 		<>
 			<IsLoadingContext.Provider value={[isLoading]}>
+			<ShowInstructionsContext.Provider value={[showInstructions]}>
 			<RouteParamsContext.Provider value={[setParams]}>
 				<RouteDataContext.Provider value={[routeData]}>
 				<ShowMorningContext.Provider value={[showMorning, setShowMorning]}>
@@ -107,6 +112,7 @@ export default function CommuteDataContext({Children}) {
 				</ShowMorningContext.Provider>
 				</RouteDataContext.Provider >
 			</RouteParamsContext.Provider>
+			</ShowInstructionsContext.Provider>
 			</IsLoadingContext.Provider>
 		</>
 	)

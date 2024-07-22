@@ -3,25 +3,46 @@ import { useState, useEffect, useContext } from 'react'
 
 import { RouteDataContext } from './contexts/CommuteDataContext/CommuteDataContext.jsx'
 
+import MediaQuery from "react-responsive";
+import { LG_CUTOFF } from '../utils/constants.js'
+
 export default function GoogleMap() {
 	const [routeData] = useContext(RouteDataContext)
 
 	return (
 		<>
-			{routeData && (
-				<div className="flex-grow-1" style={{ width : '40vw', height : '80vh'}}>
-					<APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-						<Map
-							fullscreenControl={false}
-							defaultCenter={{ lat: 40.76972, lng: -111.89056 }}
-							defaultZoom={10}
-							mapId={import.meta.env.VITE_COMMUTE_MAP_ID}
-						>
-							<Directions />
-						</Map>
-					</APIProvider>
-				</div>
-			)}
+			<MediaQuery minWidth={LG_CUTOFF}>
+				{routeData && (
+					<div style={{ width : '40vw', height : '80vh'}}>
+						<APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+							<Map
+								fullscreenControl={false}
+								defaultCenter={{ lat: 40.76972, lng: -111.89056 }}
+								defaultZoom={10}
+								mapId={import.meta.env.VITE_COMMUTE_MAP_ID}
+							>
+								<Directions />
+							</Map>
+						</APIProvider>
+					</div>
+				)}
+			</MediaQuery>
+			<MediaQuery maxWidth={LG_CUTOFF}>
+				{routeData && (
+					<div style={{ width : '100%', height : '80vh'}}>
+						<APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+							<Map
+								fullscreenControl={false}
+								defaultCenter={{ lat: 40.76972, lng: -111.89056 }}
+								defaultZoom={10}
+								mapId={import.meta.env.VITE_COMMUTE_MAP_ID}
+							>
+								<Directions />
+							</Map>
+						</APIProvider>
+					</div>
+				)}
+			</MediaQuery>
 		</>
 	)
 }
