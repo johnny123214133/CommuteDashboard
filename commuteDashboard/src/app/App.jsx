@@ -4,7 +4,7 @@ import reactLogo from '../assets/react.svg'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import NavBar from '../components/NavBar/NavBar.jsx'
-import Dashboard from '../components/Dashboard.jsx'
+import Dashboard from '../components/Dashboard/Dashboard.jsx'
 
 import CommuteDataContext from '../components/contexts/CommuteDataContext/CommuteDataContext.jsx'
 
