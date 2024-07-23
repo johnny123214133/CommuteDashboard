@@ -1,18 +1,19 @@
 import { useContext, useEffect } from 'react'
 
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import Stack from 'react-bootstrap/Stack'
 
-import NavBar from './NavBar/NavBar.jsx'
-import CommuteAnalysis from './CommuteAnalysis.jsx'
-import GoogleMap from './GoogleMap.jsx'
-import { IsLoadingContext, ShowInstructionsContext } from './contexts/CommuteDataContext/CommuteDataContext'
+import MediaQuery from "react-responsive"
 
-import MediaQuery from "react-responsive";
-import { LG_CUTOFF } from '../utils/constants.js'
+import NavBar from '../NavBar/NavBar.jsx'
+import CommuteAnalysis from '../CommuteAnalysis.jsx'
+import GoogleMap from '../GoogleMap.jsx'
+import { IsLoadingContext, ShowInstructionsContext } from '../contexts/CommuteDataContext/CommuteDataContext'
+
+import { LG_CUTOFF } from '../../utils/constants.js'
 
 import './Dashboard.css'
 
