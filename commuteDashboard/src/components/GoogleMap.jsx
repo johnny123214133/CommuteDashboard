@@ -11,7 +11,7 @@ export default function GoogleMap() {
 
 	return (
 		<>
-			<MediaQuery minWidth={LG_CUTOFF}>
+			<MediaQuery minWidth={LG_CUTOFF + 1}>
 				{routeData && (
 					<div style={{ width : '40vw', height : '80vh'}}>
 						<APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>

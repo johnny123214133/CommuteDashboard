@@ -51,7 +51,7 @@ export default function CommuteTable() {
 
 	return (
 		<>
-			<MediaQuery minWidth={LG_CUTOFF}>
+			<MediaQuery minWidth={LG_CUTOFF + 1}>
 				{tripData && activeDay && arrivalEstimates && (
 					<Table striped="columns" responsive style={{fontSize: 12}}>
 						<tbody>

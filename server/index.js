@@ -17,10 +17,10 @@ app.use(express.json())
 // 	res.send('api root')
 // })
 
-app.use('/', indexRouter)
-app.use('/location', locationRouter)
-app.use('/route', routeRouter)
-app.use('/trip', tripRouter)
+app.use('/api', indexRouter)
+app.use('/api/location', locationRouter)
+app.use('/api/route', routeRouter)
+app.use('/api/trip', tripRouter)
 
 // general error handler
 app.use(function (err, req, res, next) {

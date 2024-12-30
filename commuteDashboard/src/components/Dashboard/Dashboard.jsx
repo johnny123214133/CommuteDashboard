@@ -22,7 +22,7 @@ function Dashboard() {
 	const [showInstructions] = useContext(ShowInstructionsContext)
 	
 	return (
-		<>
+		<div className="px-2">
 			<NavBar />
 			{showInstructions && (
 				<div className="p-4">
@@ -53,9 +53,9 @@ function Dashboard() {
 					</ul>
 				</div>
 			)}
-			{isLoading &&  (<div style={{height: "80vh"}}><h1 className="m-2">Loading...</h1></div>) }
+			{isLoading &&  (<div style={{height: "80vh"}}><h1 className="m-2">Loading...</h1><p>Please be patient. Loading up to 420 trips from Google.</p></div>) }
 			{!isLoading && (
-				<MediaQuery minWidth={LG_CUTOFF}>
+				<MediaQuery minWidth={LG_CUTOFF + 1}>
 					<Stack direction="horizontal" gap={2}>
 						<div className="p-2"><GoogleMap /></div>
 						<div className="p-2 " style={{width: "100%"}}><CommuteAnalysis /></div>
@@ -70,7 +70,7 @@ function Dashboard() {
 					</Stack>
 				</MediaQuery>
 			)}
-		</>
+		</div>
 	)
 }
 
